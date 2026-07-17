@@ -95,11 +95,43 @@ jupyter notebook Project1_Merchant_Churn_Prediction.ipynb
 
 ---
 
-## 🔭 Next steps
+## 🔭 Roadmap
 
-- Tune XGBoost hyperparameters (`GridSearchCV`) and add `scale_pos_weight` to address class balance.
-- Evaluate with precision-recall curves, not just ROC-AUC, given the retention use case.
-- Deploy the model as a **Merchant Health Scorecard** web app (Streamlit) — the next project in this portfolio.
+The current notebook is an end-to-end *analysis*. The roadmap below turns it into a *repeatable, production-style workflow* — from a better model, to scoring and alerting, to a scheduled pipeline that retrains itself. Items are grouped by theme and ordered roughly by how I'd tackle them.
+
+### 1. Modeling & evaluation
+- **Tune XGBoost** with `GridSearchCV` / `RandomizedSearchCV` and add `scale_pos_weight` to address the class imbalance.
+- **Evaluate on precision-recall curves**, not just ROC-AUC — PR curves are more informative for the imbalanced retention use case.
+- **Calibrate probabilities** (Platt scaling / isotonic) so a "70% churn risk" score is trustworthy for prioritization and thresholds.
+- **Explainability** with SHAP values to show *per-merchant* churn drivers, giving the account team a reason to call, not just a score.
+- **Cross-validation** with stratified k-folds to report performance ranges rather than a single split.
+
+### 2. Productionization / MLOps
+- **Automate churn risk scoring for new merchants** — refactor the notebook into a reusable `score.py` that loads the saved model and outputs a churn probability for any new/updated merchant record. *(Your point.)*
+- **Set up an automated email alert for high-risk merchants** — a job that flags merchants crossing a risk threshold (or the idle + declining-revenue trigger) and emails the account team a prioritized list. *(Your point.)*
+- **Build a dashboard to visualize churn scores** — an interactive view (Streamlit / Plotly Dash / Power BI) of the ranked at-risk list, filterable by tier, region, and industry, as the "Merchant Health Scorecard." *(Your point.)*
+- **Schedule the retraining script to run weekly** — wrap training in a `train.py` and schedule it (cron / GitHub Actions / Airflow) so the model refreshes on the latest data. *(Your point.)*
+- **Integrate the weekly schedule with GitHub Actions** — a scheduled workflow (`.github/workflows/retrain.yml` on a `cron`) that runs retraining, versions the model artifact, and posts a run summary. *(Your point.)*
+- **Model registry & versioning** — track models, params, and metrics with MLflow (or DVC) so each retrain is reproducible and comparable.
+- **Persist artifacts** — save the trained model, encoder, and feature schema (e.g., `joblib` / `pickle`) so scoring and training share one source of truth.
+
+### 3. Deployment & serving
+- **Package as a REST API** — expose scoring via FastAPI/Flask so other systems (CRM, outreach tools) can request risk scores on demand.
+- **Containerize with Docker** for consistent, portable deployment across environments.
+- **Batch vs. real-time scoring** — support both a nightly batch score of the full book and on-demand scoring for a single merchant.
+- **CRM integration** — push scores and the ranked list into the account team's existing workflow (e.g., Salesforce) instead of a standalone tool.
+
+### 4. Monitoring & reliability
+- **Data & concept drift monitoring** — track feature distributions and churn-rate shifts over time; alert when the model needs attention.
+- **Performance monitoring** — log live predictions vs. realized outcomes to watch precision/recall degrade before it hurts.
+- **Data validation** — schema and range checks (e.g., Great Expectations / `pandera`) at the top of the pipeline to catch bad inputs early.
+
+### 5. Engineering & CI/CD
+- **Refactor notebook → modular package** — split into `data`, `features`, `train`, `score`, and `evaluate` modules with a clear config.
+- **Unit & integration tests** (`pytest`) for feature engineering and scoring, run automatically on every push.
+- **CI pipeline** — GitHub Actions to lint, test, and validate the model on pull requests.
+- **Reproducible environment** — pin dependencies (`requirements.txt` / `environment.yml`) and document a one-command setup.
+- **Documentation** — a short model card covering intended use, features, metrics, and known limitations.
 
 ---
 
