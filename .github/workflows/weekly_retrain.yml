@@ -35,4 +35,3 @@ jobs:
         git add churn_model_v1.pkl merchant_segment_summary.csv automated_churn_scores.csv
         git commit -m "Automated weekly model update [skip ci]" || echo "No changes to commit"
         git push
-```
