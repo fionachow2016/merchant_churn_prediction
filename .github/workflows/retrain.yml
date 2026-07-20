@@ -1,0 +1,12 @@
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Runs every Sunday at midnight
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Notebook
+        run: |
+          pip install nbconvert nbformat pandas xgboost joblib
+          jupyter nbconvert --to notebook --execute merchant_churn_analysis.ipynb
