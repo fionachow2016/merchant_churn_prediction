@@ -1,6 +1,5 @@
 #### **Workflow Configuration (`weekly_retrain.yml`)**
 
-```yaml
 name: Weekly Merchant Churn Retraining
 
 on:
