@@ -27,7 +27,7 @@ jobs:
 
     - name: Execute Notebook
       run: |
-        jupyter nbconvert --to notebook --execute --inplace Merchant_Churn_Analysis.ipynb
+        jupyter nbconvert --to notebook --execute --inplace Project1_Merchant_Churn_Prediction.ipynb
 
     - name: Commit Updated Artifacts
       run: |
