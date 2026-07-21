@@ -9,4 +9,4 @@ jobs:
       - name: Run Notebook
         run: |
           pip install nbconvert nbformat pandas xgboost joblib
-          jupyter nbconvert --to notebook --execute merchant_churn_analysis.ipynb
+          jupyter nbconvert --to notebook --execute Project1_Merchant_Churn_Prediction.ipynb
